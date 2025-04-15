@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitTrack - Exercise Planner</title>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--light);
+      color: var(--dark);
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .panel h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary);
+    }
+    
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-sm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .calendar {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendar th, .calendar td {
+      border: 1px solid var(--light-gray);
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    .calendar th {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .calendar td {
+      height: 80px;
+      vertical-align: top;
+      position: relative;
+    }
+
+    .calendar td:hover {
+      background-color: var(--light-gray);
+      cursor: pointer;
+    }
+
+    .calendar .date-number {
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+
+    .calendar .has-workout {
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+
+    .calendar .workout-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 3px;
+    }
+
+    .calendar .strength {
+      background-color: var(--primary);
+    }
+
+    .calendar .cardio {
+      background-color: var(--success);
+    }
+
+    .calendar .mixed {
+      background: linear-gradient(45deg, var(--primary) 50%, var(--success) 50%);
+    }
+
+    .exercise-list {
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .exercise-item {
+      border-bottom: 1px solid var(--light-gray);
+      padding: 0.75rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .exercise-item:last-child {
+      border-bottom: none;
+    }
+
+    .exercise-details h3 {
+      font-size: 1rem;
+      color: var(--dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .exercise-details p {
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+
+    .filter-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .filter-btn {
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      background-color: var(--light-gray);
+      border: none;
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background-color: white;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--light-gray);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 1rem;
+    }
+
+    .modal-footer {
+      padding: 1rem;
+      border-top: 1px solid var(--light-gray);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--light-gray);
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .progress-card {
+      border-left: 4px solid var(--primary);
+      padding: 0.5rem 0.5rem 0.5rem 1rem;
+      margin-bottom: 0.5rem;
+      background-color: white;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      font-size: 0.8rem;
+    }
+
+    .tab-container {
+      border-bottom: 1px solid var(--light-gray);
+      margin-bottom: 1rem;
+      display: flex;
+    }
+
+    .tab {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab.active {
+      border-bottom-color: var(--primary);
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--dark);
+    }
+
+    .workout-tag {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-right: 0.5rem;
+    }
+
+    .workout-tag.strength {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .workout-tag.cardio {
+      background-color: var(--success);
+      color: white;
+    }
+
+    .legend {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-card h3 {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card p {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        flex-direction: column;
+      }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.22.9/babel.min.js"></script>
+  <div id="root"></div>
+  <script type="text/babel" src="app.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+function App() {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [exercises, setExercises] = useState([
+    { id: 1, name: 'Bench Press', type: 'strength', muscle: 'chest', equipment: 'barbell' },
+    { id: 2, name: 'Squats', type: 'strength', muscle: 'legs', equipment: 'barbell' },
+    { id: 3, name: 'Deadlift', type: 'strength', muscle: 'back', equipment: 'barbell' },
+    { id: 4, name: 'Pull-ups', type: 'strength', muscle: 'back', equipment: 'bodyweight' },
+    { id: 5, name: 'Push-ups', type: 'strength', muscle: 'chest', equipment: 'bodyweight' },
+    { id: 6, name: 'Running', type: 'cardio', muscle: null, equipment: 'treadmill' },
+    { id: 7, name: 'Cycling', type: 'cardio', muscle: null, equipment: 'bike' },
+    { id: 8, name: 'Jump Rope', type: 'cardio', muscle: null, equipment: 'rope' },
+    { id: 9, name: 'Shoulder Press', type: 'strength', muscle: 'shoulders', equipment: 'dumbbell' },
+    { id: 10, name: 'Bicep Curls', type: 'strength', muscle: 'arms', equipment: 'dumbbell' },
+    { id: 11, name: 'Tricep Extensions', type: 'strength', muscle: 'arms', equipment: 'cable' },
+    { id: 12, name: 'Lat Pulldown', type: 'strength', muscle: 'back', equipment: 'cable' },
+    { id: 13, name: 'Leg Press', type: 'strength', muscle: 'legs', equipment: 'machine' },
+    { id: 14, name: 'Rowing', type: 'cardio', muscle: null, equipment: 'machine' },
+    { id: 15, name: 'Plank', type: 'strength', muscle: 'core', equipment: 'bodyweight' }
+  ]);
+  
+  const [workouts, setWorkouts] = useState([]);
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [showAddWorkout, setShowAddWorkout] = useState(false);
+  const [showAddExercise, setShowAddExercise] = useState(false);
+  const [newWorkout, setNewWorkout] = useState({
+    date: '',
+    exercises: []
+  });
+  const [newExercise, setNewExercise] = useState({
+    name: '',
+    type: 'strength',
+    muscle: '',
+    equipment: ''
+  });
+  const [activeTab, setActiveTab] = useState('strength');
+  const [selectedExercise, setSelectedExercise] = useState(null);
+  const [exerciseProgress, setExerciseProgress] = useState({
+    sets: '',
+    reps: '',
+    weight: '',
+    duration: '',
+    distance: '',
+    notes: ''
+  });
+
+  useEffect(() => {
+    const localWorkouts = localStorage.getItem('workouts');
+    if (localWorkouts) {
+      setWorkouts(JSON.parse(localWorkouts));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('workouts', JSON.stringify(workouts));
+  }, [workouts]);
+
+  const daysInMonth = (year, month) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const firstDayOfMonth = (year, month) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const generateCalendarDays = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const numberOfDays = daysInMonth(year, month);
+    const firstDay = firstDayOfMonth(year, month);
+    const days = [];
+
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < firstDay; i++) {
+      days.push(null);
+    }
+
+    // Add days of the month
+    for (let i = 1; i <= numberOfDays; i++) {
+      days.push(i);
+    }
+
+    return days;
+  };
+
+  const handleDateClick = (day) => {
+    if (day) {
+      const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+      setSelectedDate(clickedDate);
+      
+      // Check if there's already a workout for this date
+      const existingWorkout = workouts.find(workout => {
+        const workoutDate = new Date(workout.date);
+        return workoutDate.toDateString() === clickedDate.toDateString();
+      });
+      
+      if (existingWorkout) {
+        // Edit existing workout
+        setNewWorkout({
+          ...existingWorkout,
+          date: clickedDate.toISOString().split('T')[0]
+        });
+      } else {
+        // Create new workout
+        setNewWorkout({
+          date: clickedDate.toISOString().split('T')[0],
+          exercises: []
+        });
+      }
+      
+      setShowAddWorkout(true);
+    }
+  };
+
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+  };
+
+  const handleExerciseFilter = (filter) => {
+    setActiveFilter(filter);
+  };
+
+  const addExerciseToWorkout = (exercise) => {
+    setSelectedExercise(exercise);
+    
+    // Reset progress fields based on exercise type
+    if (exercise.type === 'strength') {
+      setExerciseProgress({
+        sets: '',
+        reps: '',
+        weight: '',
+        duration: '',
+        distance: '',
+        notes: ''
+      });
+    } else {
+      setExerciseProgress({
+        sets: '',
+        reps: '',
+        weight: '',
+        duration: '',
+        distance: '',
+        notes: ''
+      });
+    }
+  };
+
+  const saveExerciseProgress = () => {
+    if (!selectedExercise) return;
+    
+    const workoutExercise = {
+      ...selectedExercise,
+      progress: { ...exerciseProgress }
+    };
+    
+    setNewWorkout(prev => ({
+      ...prev,
+      exercises: [...prev.exercises, workoutExercise]
+    }));
+    
+    setSelectedExercise(null);
+  };
+
+  const saveWorkout = () => {
+    if (!newWorkout.date || newWorkout.exercises.length === 0) return;
+    
+    // Check if we're editing an existing workout
+    const existingIndex = workouts.findIndex(workout => {
+      const workoutDate = new Date(workout.date);
+      const newWorkoutDate = new Date(newWorkout.date);
+      return workoutDate.toDateString() === newWorkoutDate.toDateString();
+    });
+    
+    if (existingIndex >= 0) {
+      // Update existing workout
+      const updatedWorkouts = [...workouts];
+      updatedWorkouts[existingIndex] = newWorkout;
+      setWorkouts(updatedWorkouts);
+    } else {
+      // Add new workout
+      setWorkouts([...workouts, newWorkout]);
+    }
+    
+    setShowAddWorkout(false);
+  };
+
+  const saveNewExercise = () => {
+    if (!newExercise.name) return;
+    
+    const exercise = {
+      id: exercises.length + 1,
+      ...newExercise
+    };
+    
+    setExercises([...exercises, exercise]);
+    setShowAddExercise(false);
+    setNewExercise({
+      name: '',
+      type: 'strength',
+      muscle: '',
+      equipment: ''
+    });
+  };
+
+  const removeExerciseFromWorkout = (index) => {
+    const updatedExercises = [...newWorkout.exercises];
+    updatedExercises.splice(index, 1);
+    setNewWorkout({
+      ...newWorkout,
+      exercises: updatedExercises
+    });
+  };
+
+  const getWorkoutForDate = (day) => {
+    if (!day) return null;
+    
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    return workouts.find(workout => {
+      const workoutDate = new Date(workout.date);
+      return workoutDate.toDateString() === date.toDateString();
+    });
+  };
+
+  const getWorkoutType = (workout) => {
+    if (!workout || !workout.exercises.length) return null;
+    
+    const hasStrength = workout.exercises.some(ex => ex.type === 'strength');
+    const hasCardio = workout.exercises.some(ex => ex.type === 'cardio');
+    
+    if (hasStrength && hasCardio) return 'mixed';
+    if (hasStrength) return 'strength';
+    if (hasCardio) return 'cardio';
+    return null;
+  };
+
+  const filteredExercises = activeFilter === 'all' 
+    ? exercises 
+    : exercises.filter(ex => ex.type === activeFilter);
+
+  const tabExercises = newWorkout.exercises.filter(ex => ex.type === activeTab);
+
+  const getWorkoutStats = () => {
+    let totalWorkouts = workouts.length;
+    let strengthWorkouts = 0;
+    let cardioWorkouts = 0;
+    let mixedWorkouts = 0;
+    
+    workouts.forEach(workout => {
+      const type = getWorkoutType(workout);
+      if (type === 'strength') strengthWorkouts++;
+      if (type === 'cardio') cardioWorkouts++;
+      if (type === 'mixed') mixedWorkouts++;
+    });
+    
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    
+    const workoutsThisMonth = workouts.filter(workout => {
+      const date = new Date(workout.date);
+      return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+    }).length;
+    
+    return {
+      totalWorkouts,
+      strengthWorkouts,
+      cardioWorkouts,
+      mixedWorkouts,
+      workoutsThisMonth
+    };
+  };
+
+  const stats = getWorkoutStats();
+  const calendarDays = generateCalendarDays();
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June', 
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  return (
+    <div>
+      <header>
+      <center>
+        <h1>FitTrack - Exercise Planner</h1>
+      </center>
+      </header>
+      
+      <div className="app-container">
+        <div className="dashboard">
+          <div className="panel">
+            <h2>
+              <span>Calendar</span>
+              <div>
+                <button className="btn btn-sm btn-primary" onClick={handlePrevMonth}>&lt;</button>
+                <span style={{ margin: '0 0.5rem' }}>
+                  {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+                </span>
+                <button className="btn btn-sm btn-primary" onClick={handleNextMonth}>&gt;</button>
+              </div>
+            </h2>
+            
+            <div className="legend">
+              <div className="legend-item">
+                <span className="workout-indicator strength"></span> Strength
+              </div>
+              <div className="legend-item">
+                <span className="workout-indicator cardio"></span> Cardio
+              </div>
+              <div className="legend-item">
+                <span className="workout-indicator mixed"></span> Mixed
+              </div>
+            </div>
+            
+            <table className="calendar">
+              <thead>
+                <tr>
+                  {dayNames.map(day => (
+                    <th key={day}>{day}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {Array(Math.ceil(calendarDays.length / 7)).fill().map((_, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {calendarDays.slice(rowIndex * 7, rowIndex * 7 + 7).map((day, dayIndex) => {
+                      const workout = getWorkoutForDate(day);
+                      const workoutType = getWorkoutType(workout);
+                      
+                      return (
+                        <td 
+                          key={dayIndex} 
+                          onClick={() => handleDateClick(day)} 
+                          className={`${workout ? 'has-workout' : ''}`}
+                        >
+                          {day && (
+                            <>
+                              <div className="date-number">{day}</div>
+                              {workoutType && (
+                                <div>
+                                  <span className={`workout-indicator ${workoutType}`}></span>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          <div className="panel">
+            <h2>
+              <span>Exercise Library</span>
+              <button className="btn btn-sm btn-primary" onClick={() => setShowAddExercise(true)}>Add New</button>
+            </h2>
+            
+            <div className="filter-container">
+              <button 
+                className={`filter-btn ${activeFilter === 'all' ? 'active' : ''}`}
+                onClick={() => handleExerciseFilter('all')}
+              >
+                All
+              </button>
+              <button 
+                className={`filter-btn ${activeFilter === 'strength' ? 'active' : ''}`}
+                onClick={() => handleExerciseFilter('strength')}
+              >
+                Strength
+              </button>
+              <button 
+                className={`filter-btn ${activeFilter === 'cardio' ? 'active' : ''}`}
+                onClick={() => handleExerciseFilter('cardio')}
+              >
+                Cardio
+              </button>
+            </div>
+            
+            <div className="exercise-list">
+              {filteredExercises.map(exercise => (
+                <div className="exercise-item" key={exercise.id}>
+                  <div className="exercise-details">
+                    <h3>{exercise.name}</h3>
+                    <p>
+                      <span className={`workout-tag ${exercise.type}`}>{exercise.type}</span>
+                      {exercise.muscle && `Muscle: ${exercise.muscle}`}
+                      {exercise.equipment && ` • Equipment: ${exercise.equipment}`}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="panel">
+            <h2>Stats</h2>
+            <div className="stats-grid">
+              <div className="stat-card">
+                <h3>Total Workouts</h3>
+                <p>{stats.totalWorkouts}</p>
+              </div>
+              <div className="stat-card">
+                <h3>This Month</h3>
+                <p>{stats.workoutsThisMonth}</p>
+              </div>
+              <div className="stat-card">
+                <h3>Strength</h3>
+                <p>{stats.strengthWorkouts}</p>
+              </div>
+              <div className="stat-card">
+                <h3>Cardio</h3>
+                <p>{stats.cardioWorkouts}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {showAddWorkout && (
+        <div className="modal-backdrop">
+          <div className="modal">
+            <div className="modal-header">
+              <h2>{newWorkout.exercises.length ? 'Edit Workout' : 'Add Workout'} - {new Date(newWorkout.date).toLocaleDateString()}</h2>
+              <button className="close-btn" onClick={() => setShowAddWorkout(false)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <div className="tab-container">
+                <div 
+                  className={`tab ${activeTab === 'strength' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('strength')}
+                >
+                  Strength
+                </div>
+                <div 
+                  className={`tab ${activeTab === 'cardio' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('cardio')}
+                >
+                  Cardio
+                </div>
+              </div>
+              
+              {selectedExercise ? (
+                <div>
+                  <h3>Add {selectedExercise.name}</h3>
+                  
+                  {selectedExercise.type === 'strength' ? (
+                    <>
+                      <div className="form-group">
+                        <label>Sets</label>
+                        <input 
+                          type="number" 
+                          className="form-control" 
+                          value={exerciseProgress.sets}
+                          onChange={e => setExerciseProgress({...exerciseProgress, sets: e.target.value})}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Reps</label>
+                        <input 
+                          type="number" 
+                          className="form-control" 
+                          value={exerciseProgress.reps}
+                          onChange={e => setExerciseProgress({...exerciseProgress, reps: e.target.value})}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Weight (lbs)</label>
+                        <input 
+                          type="number" 
+                          className="form-control" 
+                          value={exerciseProgress.weight}
+                          onChange={e => setExerciseProgress({...exerciseProgress, weight: e.target.value})}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="form-group">
+                        <label>Duration (minutes)</label>
+                        <input 
+                          type="number" 
+                          className="form-control" 
+                          value={exerciseProgress.duration}
+                          onChange={e => setExerciseProgress({...exerciseProgress, duration: e.target.value})}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Distance (miles)</label>
+                        <input 
+                          type="number" 
+                          className="form-control" 
+                          value={exerciseProgress.distance}
+                          onChange={e => setExerciseProgress({...exerciseProgress, distance: e.target.value})}
+                        />
+                      </div>
+                    </>
+                  )}
+                  
+                  <div className="form-group">
+                    <label>Notes</label>
+                    <textarea 
+                      className="form-control" 
+                      value={exerciseProgress.notes}
+                      onChange={e => setExerciseProgress({...exerciseProgress, notes: e.target.value})}
+                    ></textarea>
+                  </div>
+                  
+                  <div className="form-group">
+                    <button className="btn btn-primary" onClick={saveExerciseProgress}>Add to Workout</button>
+                    <button 
+                      className="btn" 
+                      onClick={() => setSelectedExercise(null)}
+                      style={{ marginLeft: '0.5rem' }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {tabExercises.length > 0 ? (
+                    <div>
+                      <h3>Selected Exercises</h3>
+                      {tabExercises.map((ex, index) => (
+                        <div className="progress-card" key={index}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <h4>{ex.name}</h4>
+                            <button 
+                              className="btn btn-sm btn-danger" 
+                              onClick={() => removeExerciseFromWorkout(index)}
+                            >
+                              &times;
+                            </button>
+                          </div>
+                          <p>
+                            {ex.type === 'strength' ? (
+                              <>
+                                {ex.progress.sets} sets × {ex.progress.reps} reps × {ex.progress.weight} lbs
+                              </>
+                            ) : (
+                              <>
+                                {ex.progress.duration} mins | {ex.progress.distance} miles
+                              </>
+                            )}
+                          </p>
+                          {ex.progress.notes && <p><small>{ex.progress.notes}</small></p>}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No {activeTab} exercises added yet.</p>
+                  )}
+
+                  <h3 style={{ marginTop: '1rem' }}>Add Exercise</h3>
+                  <div className="exercise-list">
+                    {exercises
+                      .filter(ex => ex.type === activeTab)
+                      .map(exercise => (
+                        <div className="exercise-item" key={exercise.id}>
+                          <div className="exercise-details">
+                            <h3>{exercise.name}</h3>
+                            <p>
+                              {exercise.muscle && `Muscle: ${exercise.muscle}`}
+                              {exercise.equipment && ` • Equipment: ${exercise.equipment}`}
+                            </p>
+                          </div>
+                          <button 
+                            className="btn btn-sm btn-primary"
+                            onClick={() => addExerciseToWorkout(exercise)}
+                          >
+                            Add
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button className="btn" onClick={() => setShowAddWorkout(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={saveWorkout}>Save Workout</button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {showAddExercise && (
+        <div className="modal-backdrop">
+          <div className="modal">
+            <div className="modal-header">
+              <h2>Add New Exercise</h2>
+              <button className="close-btn" onClick={() => setShowAddExercise(false)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Exercise Name</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={newExercise.name}
+                  onChange={e => setNewExercise({...newExercise, name: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Type</label>
+                <select 
+                  className="form-control"
+                  value={newExercise.type}
+                  onChange={e => setNewExercise({...newExercise, type: e.target.value})}
+                >
+                  <option value="strength">Strength</option>
+                  <option value="cardio">Cardio</option>
+                </select>
+              </div>
+              {newExercise.type === 'strength' && (
+                <div className="form-group">
+                  <label>Target Muscle Group</label>
+                  <select 
+                    className="form-control"
+                    value={newExercise.muscle}
+                    onChange={e => setNewExercise({...newExercise, muscle: e.target.value})}
+                  >
+                    <option value="">Select Muscle Group</option>
+                    <option value="chest">Chest</option>
+                    <option value="back">Back</option>
+                    <option value="legs">Legs</option>
+                    <option value="shoulders">Shoulders</option>
+                    <option value="arms">Arms</option>
+                    <option value="core">Core</option>
+                  </select>
+                </div>
+              )}
+              <div className="form-group">
+                <label>Equipment</label>
+                <select 
+                  className="form-control"
+                  value={newExercise.equipment}
+                  onChange={e => setNewExercise({...newExercise, equipment: e.target.value})}
+                >
+                  <option value="">Select Equipment</option>
+                  <option value="barbell">Barbell</option>
+                  <option value="dumbbell">Dumbbell</option>
+                  <option value="machine">Machine</option>
+                  <option value="cable">Cable</option>
+                  <option value="bodyweight">Bodyweight</option>
+                  <option value="treadmill">Treadmill</option>
+                  <option value="bike">Bike</option>
+                  <option value="rope">Jump Rope</option>
+                  <option value="kettlebell">Kettlebell</option>
+                </select>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn" onClick={() => setShowAddExercise(false)}>Cancel</button>
+              <button className="btn btn-primary" onClick={saveNewExercise}>Save Exercise</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+
+  </script>
+</body>
+</html>

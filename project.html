@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracking Project</title>
+    <link rel="stylesheet" href="snd.css">
+    <style>
+        .slider-container {
+            position: relative;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+        
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: 100%;
+            gap: 30px;
+        }
+        
+        .class-card {
+            min-width: 300px;
+            margin: 0;
+            flex: 0 0 calc(33.333% - 20px);
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .class-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .class-content {
+            padding: 20px;
+        }
+        
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .prev {
+            left: 10px;
+        }
+        
+        .next {
+            right: 10px;
+        }
+        
+        @media (max-width: 992px) {
+            .class-card {
+                flex: 0 0 calc(50% - 15px);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .class-card {
+                flex: 0 0 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDMwIDMwIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTUgM0w1IDEwdjEyaDZWMTNoNHY5aDZWMTB6Ii8+PC9zdmc+"
+                alt="Muscle Engineer Logo" width="30" height="30">
+            Muscle Engineer
+        </div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#about">About Us</a>
+            <a href="#classes">Progress</a>
+            <a href="#footer-container">Contact Us</a>
+            <a href="profile.html" class="join-now">JOIN NOW</a>
+        </div>
+    </nav>
+    <div class="background-container" id="backgroundImage"></div>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <span class="about-tag">ABOUT US</span>
+            <h1 class="hero-title">Welcome To Our Fitness Gym</h1>
+            <p class="hero-description">
+                Muscle Engineer is a premium fitness center that offers state-of-the-art equipment, experienced
+                trainers, and customized workout plans to help you achieve your fitness goals.
+            </p>
+            <p class="hero-description">
+                Our welcoming environment and friendly staff make every visit an enjoyable experience. Join us to
+                transform your body, boost your energy, and improve your overall health and wellbeing.
+            </p>
+            <div class="coach-section">
+                <a href="#explore more" class="explore-button ml-4">EXPLORE MORE</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="purple-circles"></div>
+            <div class="inner-circle"></div>
+            <img src="images/hero-banner.png" alt="Fitness Trainer" class="rounded-lg">
+        </div>
+    </section>
+
+    <section class="classes-section" id="classes">
+        <div class="text-center mb-12">
+            <center>
+                <span class="section-tag">PROGRESS</span>
+            </center>
+            <h2 class="classes-title">Fitness Classes For Every Goal</h2>
+        </div>
+        <div class="slider-container">
+            <button class="nav-button prev" id="prevBtn">&#10094;</button>
+            <div class="slider class-cards" id="classSlider">
+
+                <!-- Class Card 1 -->
+                <div class="class-card">
+                    <img src="images/sleep1.jpeg" alt="Sleep Tracking" class="class-image">
+                    <div class="class-content">
+                        <img src="images/sleep icon.png" alt="HIIT Icon" class="class-icon">
+                        <h3 class="class-name">Sleep Tracking</h3>
+                        <p class="class-description">Suspendisse nisi libero, cursus ac magna sit amet, fermentum imperdiet nisi.</p>
+                        
+                        
+                        <center>
+                            <a href="sleep.html" class="enter-button">CONTINUE</a>
+                        </center>
+                    </div>
+                </div>
+
+                <!-- Class Card 2 -->
+                <div class="class-card">
+                    <img src="images/diet.png" alt="Diet Management" class="class-image">
+                    <div class="class-content">
+                        <img src="images/diet icon.png" alt="CrossFit Icon" class="class-icon">
+                        <h3 class="class-name">Diet Management</h3>
+                        <p class="class-description">Suspendisse nisi libero, cursus ac magna sit amet, fermentum imperdiet nisi.</p>
+                    
+                        <center>
+                            <a href="diet.html" class="enter-button">CONTINUE</a>
+                        </center>
+                    </div>
+                </div>
+
+
+                <!-- Class Card 3 -->
+                <div class="class-card">
+                    <img src="images/class-3.jpg" alt="Power Yoga" class="class-image">
+                    <div class="class-content">
+                        <img src="images/class-icon-3.png" alt="Power Yoga Icon" class="class-icon">
+                        <h3 class="class-name">Power Yoga</h3>
+                        <p class="class-description">Suspendisse nisi libero, cursus ac magna sit amet, fermentum imperdiet nisi.</p>
+                        
+                        <center>
+                            <a href="yoga.html" class="enter-button">CONTINUE</a>
+                        </center>
+                    </div>
+                </div>
+
+                <!-- Class Card 4 -->
+                <div class="class-card">
+                    <img src="images/class-1.jpg" alt="Weight Lifting" class="class-image">
+                    <div class="class-content">
+                        <img src="images/class-icon-1.png" alt="Weight Lifting Icon" class="class-icon">
+                        <h3 class="class-name">Weight Lifting</h3>
+                        <p class="class-description">Suspendisse nisi libero, cursus ac magna sit amet, fermentum imperdiet nisi.</p>
+                        
+                        <center>
+                            <a href="dj.html" class="enter-button">CONTINUE</a>
+                        </center>
+                    </div>
+                </div>
+                
+            </div>
+            <button class="nav-button next" id="nextBtn">&#10095;</button>
+        </div>
+    </section>
+
+    <footer class="footer-container" id="footer-container">
+        <div class="footer-section">
+            <div class="logo">
+                <span>Muscle Engineer</span>
+            </div>
+            <p class="description">
+                Etiam suscipit fringilla ullamcorper sed malesuada urna nec odio.
+            </p>
+            <div class="hours">
+                <p>Monday - Friday: 7:00AM - 10:00PM</p>
+                <p>Saturday - Sunday: 7:00AM - 2:00PM</p>
+            </div>
+        </div>
+
+        <div class="footer-section links-section">
+            <h3>Our Links</h3>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#classes">Progress</a></li>
+                <li><a href="#footer-container">Contact Us</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section contact-section">
+            <h3>Contact Us</h3>
+            <div class="contact-item">
+                <img src="https://cdn-icons-png.flaticon.com/128/727/727646.png" alt="Location">
+                <span>551,Jimmy Carter Road<br>VIT University Vellore<br> Tamil Nadu 632014</span>
+            </div>
+            <div class="contact-item">
+                <img src="https://cdn-icons-png.flaticon.com/128/2026/2026596.png" alt="Phone">
+                <span>+91 0123456789<br>+91 9876543210</span>
+            </div>
+            <div class="contact-item">
+                <img src="https://cdn-icons-png.flaticon.com/128/2787/2787624.png" alt="Email">
+                <span>muscles@gmail.com<br>muscleng@gmail.com</span>
+            </div>
+        </div>
+
+        <div class="footer-section newsletter-section">
+            <h3>Our Newsletter</h3>
+            <div class="newsletter-input">
+                <input type="email" placeholder="fitandfine@gmail.com">
+                <button>→</button>
+            </div>
+            <div class="social-icons">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slider = document.getElementById('classSlider');
+            const cards = document.querySelectorAll('.class-card');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            let currentIndex = 0;
+            let visibleCards = getVisibleCards();
+            let cardWidth = calculateCardWidth();
+            
+            updateSliderPosition();
+            updateButtonStatus();
+            
+            window.addEventListener('resize', function() {
+                visibleCards = getVisibleCards();
+                cardWidth = calculateCardWidth();
+                currentIndex = Math.min(currentIndex, cards.length - visibleCards);
+                if (currentIndex < 0) currentIndex = 0;
+                updateSliderPosition();
+                updateButtonStatus();
+            });
+            prevBtn.addEventListener('click', function() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateSliderPosition();
+                    updateButtonStatus();
+                }
+            });
+            nextBtn.addEventListener('click', function() {
+                if (currentIndex < cards.length - visibleCards) {
+                    currentIndex++;
+                    updateSliderPosition();
+                    updateButtonStatus();
+                }
+            });
+            function getVisibleCards() {
+                if (window.innerWidth < 576) return 1;
+                if (window.innerWidth < 992) return 2;
+                return 3;
+            }
+            
+            function calculateCardWidth() {
+                if (cards.length === 0) return 0;
+                const card = cards[0];
+                const style = window.getComputedStyle(card);
+                const width = card.offsetWidth;                
+                return width + 30;
+            }
+            
+            function updateSliderPosition() {
+                const translateX = -1 * currentIndex * cardWidth;
+                slider.style.transform = `translateX(${translateX}px)`;
+            }
+
+            function updateButtonStatus() {
+                prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+                prevBtn.style.cursor = currentIndex === 0 ? 'default' : 'pointer';
+                
+                nextBtn.style.opacity = currentIndex >= cards.length - visibleCards ? '0.5' : '1';
+                nextBtn.style.cursor = currentIndex >= cards.length - visibleCards ? 'default' : 'pointer';
+            }
+ 
+            window.addNewClass = function(title, imageSrc, iconSrc, description, progress, linkHref) {
+                const newCard = document.createElement('div');
+                newCard.className = 'class-card';
+                
+                newCard.innerHTML = `
+                    <img src="${imageSrc}" alt="${title}" class="class-image">
+                    <div class="class-content">
+                        <img src="${iconSrc}" alt="${title} Icon" class="class-icon">
+                        <h3 class="class-name">${title}</h3>
+                        <p class="class-description">${description}</p>
+                        <div class="class-progress mb-4">
+                            <div class="progress-bar" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="class-details">
+                            <span>Class Full</span>
+                            <span>${progress}%</span>
+                        </div>
+                        <center>
+                            <a href="${linkHref}" class="enter-button">CONTINUE</a>
+                        </center>
+                    </div>
+                `;
+                
+                slider.appendChild(newCard);
+                cards.length = document.querySelectorAll('.class-card').length;
+                updateSliderPosition();
+                updateButtonStatus();
+            };
+        });
+    </script>
+</body>
+</html>

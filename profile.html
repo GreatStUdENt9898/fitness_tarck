@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f1f1;
+        }
+        .container {
+            background-color: rgb(234, 224, 224);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 30px;
+            padding-top: 20px;
+            display: none;
+        }
+        .bmi-container {
+            margin-top: 20px;
+        }
+        .bmi-bar {
+            height: 30px;
+            width: 100%;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .bmi-fill {
+            height: 100%;
+            background-color: #3498db;
+            transition: width 1s ease-in-out;
+            position: relative;
+        }
+        .bmi-marker {
+            position: absolute;
+            width: 3px;
+            height: 100%;
+            background-color: #2c3e50;
+            top: 0;
+            z-index: 2;
+        }
+        .bmi-categories {
+            display: flex;
+            margin-top: 5px;
+            font-size: 14px;
+            justify-content: space-between;
+        }
+        .bmi-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BMI Calculator</h1>
+        <div id="profileForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" placeholder="Enter your age" min="1" max="120">
+            </div>
+            <div class="form-group">
+                <label for="sex">Sex</label>
+                <select id="sex">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="weight">Weight (kg)</label>
+                <input type="number" id="weight" placeholder="Enter your weight" min="1" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="height">Height (cm)</label>
+                <input type="number" id="height" placeholder="Enter your height" min="1" step="0.1">
+            </div>
+            <button id="calculateBtn">Calculate BMI</button>
+        </div>
+
+        <div class="result" id="result">
+            <div class="bmi-container">
+                <div class="bmi-value" id="bmiValue"></div>
+                <div class="bmi-bar">
+                    <div class="bmi-fill" id="bmiFill"></div>
+                    <div class="bmi-marker" id="bmiMarker"></div>
+                </div>
+                <div class="bmi-categories">
+                    <span>Underweight</span>
+                    <span>Normal</span>
+                    <span>Overweight</span>
+                    <span>Obese</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculateBtn');
+            calculateBtn.addEventListener('click', calculateBMI);
+
+            function calculateBMI() {
+                // Get input values
+                const name = document.getElementById('name').value;
+                const age = parseInt(document.getElementById('age').value);
+                const sex = document.getElementById('sex').value;
+                const weight = parseFloat(document.getElementById('weight').value);
+                const height = parseFloat(document.getElementById('height').value);
+
+                // Validate inputs
+                if (!name || !age || !weight || !height) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+
+                // Calculate BMI
+                const bmi = weight / Math.pow(height/100, 2);
+                const roundedBMI = Math.round(bmi * 10) / 10;
+
+                // Update BMI value
+                document.getElementById('bmiValue').textContent = `BMI: ${roundedBMI}`;
+
+                // Update BMI bar
+                const bmiFill = document.getElementById('bmiFill');
+                const bmiMarker = document.getElementById('bmiMarker');
+                
+                // Set the width of the fill based on BMI
+                // Scale BMI from 10 to 40 to a percentage (0 to 100%)
+                let fillPercentage = ((bmi - 10) / 30) * 100;
+                fillPercentage = Math.min(Math.max(fillPercentage, 0), 100);
+                
+                bmiFill.style.width = fillPercentage + '%';
+                
+                // Set the color based on category
+                if (bmi < 18.5) {
+                    bmiFill.style.backgroundColor = '#3498db'; // Blue for underweight
+                } else if (bmi < 25) {
+                    bmiFill.style.backgroundColor = '#2ecc71'; // Green for normal
+                } else if (bmi < 30) {
+                    bmiFill.style.backgroundColor = '#f39c12'; // Orange for overweight
+                } else {
+                    bmiFill.style.backgroundColor = '#e74c3c'; // Red for obese
+                }
+                bmiMarker.style.left = fillPercentage + '%';
+                document.getElementById('result').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
